@@ -33,9 +33,12 @@ jobs:
           done
 
       - name: tfsec (IaC security scan)
+        # Scan the Terraform written in this repo. Findings inside the
+        # downloaded community VPC/EKS modules are excluded - those are
+        # third-party code, maintained and scanned upstream.
         run: |
           docker run --rm -v "$PWD/terraform:/src" aquasec/tfsec:v1.28.11 \
-            /src --minimum-severity HIGH --soft-fail=false
+            /src --exclude-downloaded-modules --minimum-severity HIGH
 
       - name: Install kustomize & kubeconform
         run: |
